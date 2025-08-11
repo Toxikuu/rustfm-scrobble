@@ -1,0 +1,50 @@
+name: check
+on: [ push, pull_request ]
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  check:
+    name: Check code
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Check for typos
+      uses: crate-ci/typos@latest
+
+    - name: Check for trailing whitespace
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ripgrep
+        ! ripgrep '\s$'
+
+      # TODO: Consider using on schedule for this
+    - name: Audit
+      uses: rustsec/audit-check@latest
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check dependencies
+      uses: EmbarkStudios/cargo-deny-action@latest
+
+    - name: Install rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Check formatting
+      run: cargo fmt --all --check --verbose
+
+    - name: Lint
+      run: cargo clippy --all --all-features --tests -- -D warnings
+
+    - name: Run tests
+      run: cargo test --all-features --verbose
+
+    - name: Check documentation
+      run: cargo doc --no-deps --document-private-items --workspace
