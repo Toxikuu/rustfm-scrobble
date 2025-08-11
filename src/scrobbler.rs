@@ -139,7 +139,7 @@ impl Scrobbler {
     /// [`authenticate_with_token`]: struct.Scrobbler.html#method.authenticate_with_token
     /// [`Scrobbler::session_key`]: struct.Scrobbler.html#method.session_key
     pub fn authenticate_with_session_key(&mut self, session_key: &str) {
-        self.client.authenticate_with_session_key(session_key)
+        self.client.authenticate_with_session_key(session_key);
     }
 
     /// Registers the given [`Scrobble`]/track as the currently authenticated user's "now playing" track.
@@ -273,7 +273,7 @@ impl Scrobbler {
             for (key, val) in &scrobble_params {
                 // batched parameters need array notation suffix ie.
                 // "artist[1] = "Artist 1", "artist[2]" = "Artist 2"
-                params.insert(format!("{}[{}]", key, i), val.clone());
+                params.insert(format!("{key}[{i}]"), val.clone());
             }
         }
 
@@ -353,7 +353,7 @@ mod tests {
     #[test]
     fn check_scrobbler_error() {
         let err = ScrobblerError::new("test_error".into());
-        let fmt = format!("{}", err);
+        let fmt = format!("{err}");
         assert_eq!("test_error", fmt);
 
         let desc = err.to_string();

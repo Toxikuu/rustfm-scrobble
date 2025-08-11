@@ -8,6 +8,7 @@ pub struct Credentials {
     api_secret: String,
 
     // Individual user's username & pass, or auth token
+    #[allow(clippy::struct_field_names)] // TODO: <-
     credentials: Option<CredentialsVariant>,
 
     // Long-lasting session key (used once UserCredentials are authenticated)
@@ -52,18 +53,18 @@ impl Credentials {
         }));
 
         // Invalidate session because we have new credentials
-        self.clear_session_key()
+        self.clear_session_key();
     }
 
     pub fn set_user_token(&mut self, token: &str) {
         self.credentials = Some(CredentialsVariant::Token(token.to_owned()));
-        self.clear_session_key()
+        self.clear_session_key();
     }
 
     // Invalidates session. Usually because we have new user token / credentials, which invalidates
     // the current session.
     fn clear_session_key(&mut self) {
-        self.session_key = None
+        self.session_key = None;
     }
 
     pub fn set_session_key(&mut self, key: &str) {
@@ -71,7 +72,7 @@ impl Credentials {
     }
 
     pub fn session_key(&self) -> Option<&str> {
-        self.session_key.as_ref().map(std::ops::Deref::deref)
+        self.session_key.as_deref()
     }
 
     // Returns true if we are currently authenticated (have a valid session token set)
@@ -132,7 +133,7 @@ impl Credentials {
 
         let mut sig = String::new();
         for k in keys {
-            sig.push_str((k.to_string() + sig_params[k].as_str()).as_str())
+            sig.push_str((k.to_string() + sig_params[k].as_str()).as_str());
         }
 
         sig.push_str(self.api_secret.as_str());
@@ -181,10 +182,8 @@ mod tests {
         auth_creds.set_user_credentials("Username", "Password");
 
         let internal_creds = auth_creds.credentials.unwrap();
-
-        let creds = match internal_creds {
-            CredentialsVariant::UserSupplied(val) => val,
-            _ => panic!("Invalid UserCredentials Value"),
+        let CredentialsVariant::UserSupplied(creds) = internal_creds else {
+            panic!("Invalid UserCredentials Value")
         };
 
         assert_eq!(creds.username, "Username");
@@ -196,11 +195,9 @@ mod tests {
         let mut auth_creds = Credentials::new_partial("Key", "Secret");
         auth_creds.set_user_token("Token");
 
-        let token = auth_creds.credentials.unwrap();
-
-        let token = match token {
-            CredentialsVariant::Token(val) => val,
-            _ => panic!("Invalid Token"),
+        let internal_token = auth_creds.credentials.unwrap();
+        let CredentialsVariant::Token(token) = internal_token else {
+            panic!("Invalid Token")
         };
 
         assert_eq!(token, "Token");
@@ -232,7 +229,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "No user credentials available")]
     fn check_get_bad_params() {
         let auth_creds = Credentials::new_partial("Key", "Secret");
         auth_creds.get_auth_request_params().unwrap();

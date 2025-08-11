@@ -1,6 +1,8 @@
 #![doc(html_root_url = "https://docs.rs/rustfm-scrobble/1.0.0")]
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
+#![allow(clippy::must_use_candidate)] // TODO: <-
+#![allow(clippy::missing_errors_doc)] // TODO: <-
 //! # rustfm-scrobble
 //!
 //! Client for the Last.fm Scrobble API v2.0. Allows easy access to the most-commonly used Scrobble/Now Playing

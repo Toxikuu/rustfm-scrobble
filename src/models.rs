@@ -122,7 +122,7 @@ pub mod responses {
     /// 
     /// All Scrobble/NowPlaying responses have their fields as `CorrectableString`'s. The API will sometimes change
     /// the artist/song name/album name data that you have submitted. For example - it is common for Bjork to be turned
-    /// into Björk by the API; the modified artist field would be marked `corrected = true`, `text = "Björk". 
+    /// into Björk by the API; the modified artist field would be marked `corrected = true`, `text = "Björk"`.
     /// 
     /// Most clients can ignore these corrections, but the information is exposed for clients that require it.
     /// 
@@ -142,8 +142,8 @@ pub mod responses {
         {
             let deser_result: json::Value = serde::Deserialize::deserialize(de)?;
             match deser_result {
-                json::Value::String(ref s) if &*s == "1" => Ok(true),
-                json::Value::String(ref s) if &*s == "0" => Ok(false),
+                json::Value::String(ref s) if s == "1" => Ok(true),
+                json::Value::String(ref s) if s == "0" => Ok(false),
                 _ => Err(serde::de::Error::custom("Unexpected value")),
             }
         }
@@ -171,7 +171,7 @@ pub mod responses {
             self.0.len()
         }
 
-        pub fn iter<'a>(&'a self) -> Iter<'a, ScrobbleResponse> {
+        pub fn iter(&self) -> Iter<ScrobbleResponse> {
             self.into_iter()
         }
     }
@@ -381,7 +381,7 @@ pub mod metadata {
             self.0.len()
         }
 
-        pub fn iter<'a>(&'a self) -> Iter<'a, Scrobble> {
+        pub fn iter(&self) -> Iter<Scrobble> {
             self.into_iter()
         }
     }

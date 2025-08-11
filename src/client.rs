@@ -1,7 +1,6 @@
 // Last.fm scrobble API 2.0 client
 use std::collections::HashMap;
 use std::fmt;
-use ureq;
 
 use crate::auth::Credentials;
 use crate::models::responses::{
@@ -24,7 +23,7 @@ impl fmt::Display for ApiOperation {
             Self::NowPlaying => "track.updateNowPlaying",
             Self::Scrobble => "track.scrobble",
         };
-        write!(f, "{}", str)
+        write!(f, "{str}")
     }
 }
 
@@ -57,10 +56,10 @@ impl LastFm {
 
         let body = self
             .api_request(&ApiOperation::AuthMobileSession, params)
-            .map_err(|msg| format!("Authentication failed: {}", msg))?;
+            .map_err(|e| format!("Authentication failed: {e}"))?;
 
         let decoded: AuthResponse = serde_json::from_str(body.as_str())
-            .map_err(|err| format!("Authentication failed: {}", err))?;
+            .map_err(|e| format!("Authentication failed: {e}"))?;
 
         self.auth.set_session_key(&decoded.session.key);
 
@@ -72,10 +71,10 @@ impl LastFm {
 
         let body = self
             .api_request(&ApiOperation::AuthWebSession, params)
-            .map_err(|msg| format!("Authentication failed: {}", msg))?;
+            .map_err(|e| format!("Authentication failed: {e}"))?;
 
         let decoded: AuthResponse = serde_json::from_str(body.as_str())
-            .map_err(|err| format!("Authentication failed: {}", err))?;
+            .map_err(|e| format!("Authentication failed: {e}"))?;
 
         self.auth.set_session_key(&decoded.session.key);
 
@@ -87,7 +86,7 @@ impl LastFm {
     /// This requires no initial authentication with the API, so we simply store the key. It must be a valid session
     /// key. Session keys are documented at `Scrobbler::authenticate_with_session_key`.
     pub fn authenticate_with_session_key(&mut self, session_key: &str) {
-        self.auth.set_session_key(session_key)
+        self.auth.set_session_key(session_key);
     }
 
     pub fn session_key(&self) -> Option<&str> {
@@ -100,10 +99,10 @@ impl LastFm {
     ) -> Result<NowPlayingResponse, String> {
         let body = self
             .send_authenticated_request(&ApiOperation::NowPlaying, params)
-            .map_err(|msg| format!("Now playing request failed: {}", msg))?;
+            .map_err(|e| format!("Now playing request failed: {e}"))?;
 
         let decoded: NowPlayingResponseWrapper = serde_json::from_str(body.as_str())
-            .map_err(|msg| format!("Now playing request failed: {}", msg))?;
+            .map_err(|e| format!("Now playing request failed: {e}"))?;
 
         Ok(decoded.nowplaying)
     }
@@ -114,10 +113,10 @@ impl LastFm {
     ) -> Result<ScrobbleResponse, String> {
         let body = self
             .send_authenticated_request(&ApiOperation::Scrobble, params)
-            .map_err(|msg| format!("Scrobble request failed: {}", msg))?;
+            .map_err(|e| format!("Scrobble request failed: {e}"))?;
 
         let decoded: ScrobbleResponseWrapper = serde_json::from_str(body.as_str())
-            .map_err(|msg| format!("Scrobble request failed: {}", msg))?;
+            .map_err(|e| format!("Scrobble request failed: {e}"))?;
 
         Ok(decoded.scrobbles.scrobble)
     }
@@ -128,10 +127,10 @@ impl LastFm {
     ) -> Result<BatchScrobbleResponse, String> {
         let body = self
             .send_authenticated_request(&ApiOperation::Scrobble, params)
-            .map_err(|msg| format!("Batch scrobble request failed: {}", msg))?;
+            .map_err(|e| format!("Batch scrobble request failed: {e}"))?;
 
         let wrapper: BatchScrobbleResponseWrapper = serde_json::from_str(body.as_str())
-            .map_err(|msg| format!("Batch scrobble request failed: {}", msg))?;
+            .map_err(|e| format!("Batch scrobble request failed: {e}"))?;
 
         Ok(BatchScrobbleResponse {
             scrobbles: wrapper.scrobbles.scrobbles,
@@ -152,7 +151,7 @@ impl LastFm {
             req_params.insert(k.clone(), v.clone());
         }
 
-        self.api_request(&operation, req_params)
+        self.api_request(operation, req_params)
     }
 
     fn api_request(
@@ -161,7 +160,7 @@ impl LastFm {
         params: HashMap<String, String>,
     ) -> Result<String, String> {
         let resp = self
-            .send_request(&operation, params)
+            .send_request(operation, params)
             .map_err(|err| err.to_string())?;
 
         if resp.error() {
