@@ -81,8 +81,8 @@ impl LastFm {
         Ok(decoded.session)
     }
 
-    /// Authenticates with a session key 
-    /// 
+    /// Authenticates with a session key
+    ///
     /// This requires no initial authentication with the API, so we simply store the key. It must be a valid session
     /// key. Session keys are documented at `Scrobbler::authenticate_with_session_key`.
     pub fn authenticate_with_session_key(&mut self, session_key: &str) {
@@ -248,13 +248,13 @@ mod tests {
         let _m = mock("POST", mockito::Matcher::Any)
             .with_body(
                 r#"
-            { 
+            {
                 "scrobbles": [{
                         "artist": [ "0", "foo floyd and the fruit flies" ],
-                        "album": [ "1", "old bananas" ], 
+                        "album": [ "1", "old bananas" ],
                         "albumArtist": [ "0", "foo floyd"],
-                        "track": [ "1", "old bananas"], 
-                        "timestamp": "2019-10-04 13:23:40" 
+                        "track": [ "1", "old bananas"],
+                        "timestamp": "2019-10-04 13:23:40"
                 }]
             }
             "#,
@@ -281,15 +281,15 @@ mod tests {
         let _m = mock("POST", mockito::Matcher::Any)
             .with_body(
                 r#"
-            { 
+            {
                 "scrobbles": {
                     "scrobble":
                         {
                             "artist": [ "0", "foo floyd and the fruit flies" ],
-                            "album": [ "1", "old bananas" ], 
+                            "album": [ "1", "old bananas" ],
                             "albumArtist": [ "0", "foo floyd"],
-                            "track": [ "1", "old bananas"], 
-                            "timestamp": "2019-10-04 13:23:40" 
+                            "track": [ "1", "old bananas"],
+                            "timestamp": "2019-10-04 13:23:40"
                         }
                 }
             }
@@ -304,22 +304,22 @@ mod tests {
         let _m = mock("POST", mockito::Matcher::Any)
             .with_body(
                 r#"
-            { 
+            {
                 "scrobbles": {
                     "scrobble":[
                         {
                             "artist": [ "0", "foo floyd and the fruit flies" ],
-                            "album": [ "1", "old bananas" ], 
+                            "album": [ "1", "old bananas" ],
                             "albumArtist": [ "0", "foo floyd"],
-                            "track": [ "1", "old bananas"], 
-                            "timestamp": "2019-10-04 13:23:40" 
+                            "track": [ "1", "old bananas"],
+                            "timestamp": "2019-10-04 13:23:40"
                         },
                         {
                             "artist": [ "0", "foo floyd and the fruit flies" ],
-                            "album": [ "1", "old bananas" ], 
+                            "album": [ "1", "old bananas" ],
                             "albumArtist": [ "0", "foo floyd"],
-                            "track": [ "1", "old bananas"], 
-                            "timestamp": "2019-10-04 13:23:40" 
+                            "track": [ "1", "old bananas"],
+                            "timestamp": "2019-10-04 13:23:40"
                         }
                     ]
                 }
@@ -347,13 +347,13 @@ mod tests {
         let _m = mock("POST", mockito::Matcher::Any)
             .with_body(
                 r#"
-            { 
+            {
                 "nowplaying": {
                             "artist": [ "0", "foo floyd and the fruit flies" ],
-                            "album": [ "1", "old bananas" ], 
+                            "album": [ "1", "old bananas" ],
                             "albumArtist": [ "0", "foo floyd"],
-                            "track": [ "1", "old bananas"], 
-                            "timestamp": "2019-10-04 13:23:40" 
+                            "track": [ "1", "old bananas"],
+                            "timestamp": "2019-10-04 13:23:40"
                         }
             }
             "#,
@@ -378,7 +378,7 @@ mod tests {
         let _m = mock("POST", mockito::Matcher::Any)
             .with_body(
                 r#"
-                {   
+                {
                     "session": {
                         "key": "key",
                         "subscriber": 1337,
