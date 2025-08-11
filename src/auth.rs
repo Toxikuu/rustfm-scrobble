@@ -28,12 +28,10 @@ enum CredentialsVariant {
 }
 
 impl UserCredentials {
-
     /// Returns true when a valid username & password are set
     pub fn can_authenticate(&self) -> bool {
         !self.username.is_empty() && !self.password.is_empty()
     }
-
 }
 
 impl Credentials {

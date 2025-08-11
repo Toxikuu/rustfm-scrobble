@@ -156,8 +156,7 @@ impl LastFm {
         operation: &ApiOperation,
         params: HashMap<String, String>,
     ) -> Result<String, String> {
-        self
-            .send_request(operation, params)
+        self.send_request(operation, params)
             .map_err(|err| err.to_string())
     }
 
@@ -172,9 +171,14 @@ impl LastFm {
         let url = &mockito::server_url();
 
         params.insert("method".to_string(), operation.to_string());
-        params.insert("api_sig".to_string(), self.auth.get_signature(operation.to_string(), &params));
+        params.insert(
+            "api_sig".to_string(),
+            self.auth.get_signature(operation.to_string(), &params),
+        );
 
-        let resp = self.agent.post(url)
+        let resp = self
+            .agent
+            .post(url)
             .send_form(&params)
             .map_err(|e| e.to_string())?;
 
@@ -182,7 +186,9 @@ impl LastFm {
             return Err(format!("Non success status ({})", resp.status()));
         }
 
-        resp.into_body().read_to_string().map_err(|_| "Failed to read response body".to_string())
+        resp.into_body()
+            .read_to_string()
+            .map_err(|_| "Failed to read response body".to_string())
     }
 }
 

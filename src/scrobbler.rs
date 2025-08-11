@@ -36,7 +36,6 @@ pub struct Scrobbler {
 }
 
 impl Scrobbler {
-
     /// Creates a new Scrobbler instance with the given Last.fm API Key and API Secret
     ///
     /// # Usage
@@ -290,7 +289,6 @@ impl Scrobbler {
         self.client.session_key()
     }
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -52,10 +52,9 @@ mod error;
 mod models;
 mod scrobbler;
 
+pub use crate::error::ScrobblerError;
 pub use crate::models::metadata::{Scrobble, ScrobbleBatch};
 pub use crate::scrobbler::Scrobbler;
-pub use crate::error::ScrobblerError;
-
 
 /// Last.fm API Response Types
 ///

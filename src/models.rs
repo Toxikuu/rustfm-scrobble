@@ -101,18 +101,19 @@ pub mod responses {
         where
             D: serde::Deserializer<'de>,
         {
-
             let deser_result: json::Value = serde::Deserialize::deserialize(de)?;
             let scrobbles = match deser_result {
-                obj@json::Value::Object(_) => {
-                    let scrobble: ScrobbleResponse = serde_json::from_value(obj).expect("Parsing scrobble failed");
-                    ScrobbleList::from(vec!(scrobble))
+                obj @ json::Value::Object(_) => {
+                    let scrobble: ScrobbleResponse =
+                        serde_json::from_value(obj).expect("Parsing scrobble failed");
+                    ScrobbleList::from(vec![scrobble])
                 }
-                arr@json::Value::Array(_) => {
-                    let scrobbles: ScrobbleList = serde_json::from_value(arr).expect("Parsing scrobble list failed");
+                arr @ json::Value::Array(_) => {
+                    let scrobbles: ScrobbleList =
+                        serde_json::from_value(arr).expect("Parsing scrobble list failed");
                     scrobbles
-                },
-                _ => ScrobbleList::from(vec!())
+                }
+                _ => ScrobbleList::from(vec![]),
             };
             Ok(scrobbles)
         }
@@ -243,7 +244,6 @@ pub mod metadata {
     }
 
     impl Scrobble {
-
         /// Constructs a new Scrobble instance, representing a single playthrough of a music track. `Scrobble`s are
         /// submitted to Last.fm via an instance of [`Scrobbler`]. A new `Scrobble` requires an artist name, song/track
         /// name, and an album name.
@@ -321,7 +321,6 @@ pub mod metadata {
         pub fn album(&self) -> &str {
             &self.album
         }
-
     }
 
     /// Converts from tuple of `&str`s in the form `(artist, track, album)`
@@ -347,10 +346,7 @@ pub mod metadata {
     /// Designed to make it easier to cooperate with other track info types.
     impl From<Vec<(&str, &str, &str)>> for ScrobbleBatch {
         fn from(collection: Vec<(&str, &str, &str)>) -> Self {
-            let scrobbles: Vec<Scrobble> = collection
-                                .iter()
-                                .map(Scrobble::from)
-                                .collect();
+            let scrobbles: Vec<Scrobble> = collection.iter().map(Scrobble::from).collect();
 
             ScrobbleBatch::from(scrobbles)
         }
@@ -361,10 +357,7 @@ pub mod metadata {
     /// Designed to make it easier to cooperate with other track info types.
     impl From<Vec<(String, String, String)>> for ScrobbleBatch {
         fn from(collection: Vec<(String, String, String)>) -> Self {
-            let scrobbles: Vec<Scrobble> = collection
-                                .iter()
-                                .map(Scrobble::from)
-                                .collect();
+            let scrobbles: Vec<Scrobble> = collection.iter().map(Scrobble::from).collect();
 
             ScrobbleBatch::from(scrobbles)
         }
