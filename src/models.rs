@@ -176,6 +176,12 @@ pub mod responses {
         }
     }
 
+    impl Default for ScrobbleList {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl Extend<ScrobbleResponse> for ScrobbleList {
         fn extend<T: IntoIterator<Item = ScrobbleResponse>>(&mut self, iter: T) {
             self.0.extend(iter);
@@ -383,6 +389,12 @@ pub mod metadata {
 
         pub fn iter(&self) -> Iter<Scrobble> {
             self.into_iter()
+        }
+    }
+
+    impl Default for ScrobbleBatch {
+        fn default() -> Self {
+            Self::new()
         }
     }
 
