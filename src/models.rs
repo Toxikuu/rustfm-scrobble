@@ -1,6 +1,8 @@
 pub mod responses {
 
     use std::fmt;
+    use std::slice::Iter;
+    use std::vec::IntoIter;
 
     use serde::Deserialize;
     use serde_json as json;
@@ -61,9 +63,7 @@ pub mod responses {
     /// metadata corrections the Last.fm API made to the arist/track/album submitted.
     /// 
     /// [Scrobble Request API Documentation](https://www.last.fm/api/show/track.scrobble)
-    #[derive(Deserialize, Debug, WrappedVec)]
-    #[CollectionName = "ScrobbleList"]
-    #[CollectionDerives = "Debug, Deserialize"]
+    #[derive(Deserialize, Debug)]
     pub struct ScrobbleResponse {
         pub artist: CorrectableString,
         pub album: CorrectableString,
@@ -154,11 +154,68 @@ pub mod responses {
             write!(f, "{}", self.text)
         }
     }
+
+    #[derive(Debug, Deserialize)]
+    pub struct ScrobbleList(Vec<ScrobbleResponse>);
+
+    impl ScrobbleList {
+        pub fn new() -> Self {
+            Self(vec![])
+        }
+
+        pub fn is_empty(&self) -> bool {
+            self.0.is_empty()
+        }
+
+        pub fn len(&self) -> usize {
+            self.0.len()
+        }
+
+        pub fn iter<'a>(&'a self) -> Iter<'a, ScrobbleResponse> {
+            self.into_iter()
+        }
+    }
+
+    impl Extend<ScrobbleResponse> for ScrobbleList {
+        fn extend<T: IntoIterator<Item = ScrobbleResponse>>(&mut self, iter: T) {
+            self.0.extend(iter);
+        }
+    }
+
+    impl From<Vec<ScrobbleResponse>> for ScrobbleList {
+        fn from(responses: Vec<ScrobbleResponse>) -> Self {
+            Self(responses)
+        }
+    }
+
+    impl FromIterator<ScrobbleResponse> for ScrobbleList {
+        fn from_iter<T: IntoIterator<Item = ScrobbleResponse>>(iter: T) -> Self {
+            ScrobbleList(iter.into_iter().collect())
+        }
+    }
+
+    impl IntoIterator for ScrobbleList {
+        type IntoIter = IntoIter<ScrobbleResponse>;
+        type Item = ScrobbleResponse;
+        fn into_iter(self) -> Self::IntoIter {
+            self.0.into_iter()
+        }
+    }
+
+    impl<'a> IntoIterator for &'a ScrobbleList {
+        type IntoIter = Iter<'a, ScrobbleResponse>;
+        type Item = &'a ScrobbleResponse;
+        fn into_iter(self) -> Self::IntoIter {
+            self.0.iter()
+        }
+    }
 }
 
 pub mod metadata {
 
     use std::collections::HashMap;
+    use std::slice::Iter;
+    use std::vec::IntoIter;
 
     /// Repesents a single music track played at a point in time. In the Last.fm universe, this is known as a 
     /// "scrobble".
@@ -170,10 +227,7 @@ pub mod metadata {
     /// [`Scrobbler::now_playing`]: struct.Scrobbler.html#method.now_playing
     /// [`Scrobbler::scrobble`]: struct.Scrobbler.html#method.scrobble
     /// [`Scrobbler::scrobble_batch`]: struct.Scrobbler.html#method.scrobble_batch
-    #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, WrappedVec)]
-    #[CollectionName = "ScrobbleBatch"]
-    #[CollectionDoc = "A batch of Scrobbles to be submitted to Last.fm together."]
-    #[CollectionDerives = "Clone, Debug"]
+    #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
     pub struct Scrobble {
         artist: String,
         track: String,
@@ -307,6 +361,62 @@ pub mod metadata {
                                 .collect();
 
             ScrobbleBatch::from(scrobbles)
+        }
+    }
+
+    /// A batch of scrobbles to be submitted at once
+    #[derive(Clone, Debug)]
+    pub struct ScrobbleBatch(Vec<Scrobble>);
+
+    impl ScrobbleBatch {
+        pub fn new() -> ScrobbleBatch {
+            ScrobbleBatch(vec![])
+        }
+
+        pub fn is_empty(&self) -> bool {
+            self.0.is_empty()
+        }
+
+        pub fn len(&self) -> usize {
+            self.0.len()
+        }
+
+        pub fn iter<'a>(&'a self) -> Iter<'a, Scrobble> {
+            self.into_iter()
+        }
+    }
+
+    impl FromIterator<Scrobble> for ScrobbleBatch {
+        fn from_iter<T: IntoIterator<Item = Scrobble>>(iter: T) -> Self {
+            ScrobbleBatch(iter.into_iter().collect())
+        }
+    }
+
+    impl From<Vec<Scrobble>> for ScrobbleBatch {
+        fn from(scrobbles: Vec<Scrobble>) -> Self {
+            ScrobbleBatch(scrobbles)
+        }
+    }
+
+    impl IntoIterator for ScrobbleBatch {
+        type Item = Scrobble;
+        type IntoIter = IntoIter<Scrobble>;
+        fn into_iter(self) -> Self::IntoIter {
+            self.0.into_iter()
+        }
+    }
+
+    impl<'a> IntoIterator for &'a ScrobbleBatch {
+        type Item = &'a Scrobble;
+        type IntoIter = Iter<'a, Scrobble>;
+        fn into_iter(self) -> Self::IntoIter {
+            self.0.iter()
+        }
+    }
+
+    impl Extend<Scrobble> for ScrobbleBatch {
+        fn extend<T: IntoIterator<Item = Scrobble>>(&mut self, iter: T) {
+            self.0.extend(iter);
         }
     }
 
