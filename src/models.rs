@@ -172,7 +172,7 @@ pub mod responses {
             self.0.len()
         }
 
-        pub fn iter(&self) -> Iter<ScrobbleResponse> {
+        pub fn iter(&self) -> Iter<'_, ScrobbleResponse> {
             self.into_iter()
         }
     }
@@ -380,7 +380,7 @@ pub mod metadata {
             self.0.len()
         }
 
-        pub fn iter(&self) -> Iter<Scrobble> {
+        pub fn iter(&self) -> Iter<'_, Scrobble> {
             self.into_iter()
         }
     }
