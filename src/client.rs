@@ -29,17 +29,14 @@ impl fmt::Display for ApiOperation {
 
 pub struct LastFm {
     auth: Credentials,
-    http_client: ureq::Agent,
+    agent: ureq::Agent,
 }
 
 impl LastFm {
     pub fn new(api_key: &str, api_secret: &str) -> Self {
-        let partial_auth = Credentials::new_partial(api_key, api_secret);
-        let http_client = ureq::agent();
-
         Self {
-            auth: partial_auth,
-            http_client,
+            auth: Credentials::new_partial(api_key, api_secret),
+            agent: ureq::agent(),
         }
     }
 
@@ -159,46 +156,33 @@ impl LastFm {
         operation: &ApiOperation,
         params: HashMap<String, String>,
     ) -> Result<String, String> {
-        let resp = self
+        self
             .send_request(operation, params)
-            .map_err(|err| err.to_string())?;
-
-        if resp.error() {
-            return Err(format!("Non Success status ({})", resp.status()));
-        }
-
-        let resp_body = resp
-            .into_string()
-            .map_err(|_| "Failed to read response body".to_string())?;
-
-        Ok(resp_body)
+            .map_err(|err| err.to_string())
     }
 
     fn send_request(
         &self,
         operation: &ApiOperation,
         mut params: HashMap<String, String>,
-    ) -> Result<ureq::Response, String> {
+    ) -> Result<String, String> {
         #[cfg(not(test))]
         let url = "https://ws.audioscrobbler.com/2.0/?format=json";
         #[cfg(test)]
         let url = &mockito::server_url();
 
-        let signature = self.auth.get_signature(operation.to_string(), &params);
-
         params.insert("method".to_string(), operation.to_string());
-        params.insert("api_sig".to_string(), signature);
+        params.insert("api_sig".to_string(), self.auth.get_signature(operation.to_string(), &params));
 
-        let params: Vec<(&str, &str)> = params
-            .iter()
-            .map(|(k, v)| (k.as_str(), v.as_str()))
-            .collect();
+        let resp = self.agent.post(url)
+            .send_form(&params)
+            .map_err(|e| e.to_string())?;
 
-        let resp = self.http_client.post(url).send_form(&params[..]);
-        match resp.synthetic_error() {
-            None => Ok(resp),
-            Some(e) => Err(e.to_string()),
+        if !resp.status().is_success() {
+            return Err(format!("Non success status ({})", resp.status()));
         }
+
+        resp.into_body().read_to_string().map_err(|_| "Failed to read response body".to_string())
     }
 }
 
