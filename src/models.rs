@@ -398,15 +398,21 @@ pub mod metadata {
         }
     }
 
-    impl FromIterator<Scrobble> for ScrobbleBatch {
-        fn from_iter<T: IntoIterator<Item = Scrobble>>(iter: T) -> Self {
-            ScrobbleBatch(iter.into_iter().collect())
+    impl Extend<Scrobble> for ScrobbleBatch {
+        fn extend<T: IntoIterator<Item = Scrobble>>(&mut self, iter: T) {
+            self.0.extend(iter);
         }
     }
 
     impl From<Vec<Scrobble>> for ScrobbleBatch {
         fn from(scrobbles: Vec<Scrobble>) -> Self {
             ScrobbleBatch(scrobbles)
+        }
+    }
+
+    impl FromIterator<Scrobble> for ScrobbleBatch {
+        fn from_iter<T: IntoIterator<Item = Scrobble>>(iter: T) -> Self {
+            ScrobbleBatch(iter.into_iter().collect())
         }
     }
 
@@ -423,12 +429,6 @@ pub mod metadata {
         type IntoIter = Iter<'a, Scrobble>;
         fn into_iter(self) -> Self::IntoIter {
             self.0.iter()
-        }
-    }
-
-    impl Extend<Scrobble> for ScrobbleBatch {
-        fn extend<T: IntoIterator<Item = Scrobble>>(&mut self, iter: T) {
-            self.0.extend(iter);
         }
     }
 
