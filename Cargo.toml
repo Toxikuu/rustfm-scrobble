@@ -1,9 +1,9 @@
 [package]
 name = "rustfm-scrobble"
 version = "1.1.1"
-authors = ["David Futcher <david@futcher.io>"]
+authors = ["David Futcher <david@futcher.io>", "Tox <toxtek@proton.me>"]
 description = "Last.fm Scrobble crate for Rust"
-repository = "https://github.com/bobbo/rustfm-scrobble"
+repository = "https://github.com/toxikuu/rustfm-scrobble"
 keywords = ["lastfm", "last-fm", "scrobble", "api"]
 license = "MIT"
 readme = "README.md"
