@@ -2,7 +2,7 @@ rustfm-scrobble
 ===============
 
 *rustfm-scrobble* is a [Last.fm Scrobble API 2.0](http://www.last.fm/api/scrobbling) crate for Rust. It allows easy
-acccess to the "scrobble" and "now playing" notification endpoints through a simple Rust API. It can be used to record
+access to the "scrobble" and "now playing" notification endpoints through a simple Rust API. It can be used to record
 song-plays from music players, build analog scrobbling tools similar to [VinylScrobbler](https://vinylscrobbler.com/)
 or work with IoT Devices. It was initially built to implement a
 [Spotify scrobbling service](https://github.com/bobbo/spotify-connect-scrobbler) using the

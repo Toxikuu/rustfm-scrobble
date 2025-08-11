@@ -223,7 +223,7 @@ pub mod metadata {
     use std::slice::Iter;
     use std::vec::IntoIter;
 
-    /// Repesents a single music track played at a point in time. In the Last.fm universe, this is known as a
+    /// Represents a single music track played at a point in time. In the Last.fm universe, this is known as a
     /// "scrobble".
     ///
     /// Takes an artist, track and album name. Can hold a timestamp indicating when the track was listened to.

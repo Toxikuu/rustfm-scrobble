@@ -200,7 +200,7 @@ impl Scrobbler {
     /// contains information that may be of use to some clients.
     ///
     /// # Last.fm API Documentation
-    /// [track.scrobble API Method Documention](https://www.last.fm/api/show/track.scrobble)
+    /// [track.scrobble API Method Documentation](https://www.last.fm/api/show/track.scrobble)
     /// [Scrobble Request Documentation](https://www.last.fm/api/scrobbling#scrobble-requests)
     ///
     /// [`Scrobble`]: struct.Scrobble.html
@@ -244,7 +244,7 @@ impl Scrobbler {
     /// that may be of interest.
     ///
     /// # Last.fm API Documentation
-    /// [track.scrobble API Method Documention](https://www.last.fm/api/show/track.scrobble)
+    /// [track.scrobble API Method Documentation](https://www.last.fm/api/show/track.scrobble)
     ///
     /// [Scrobble Request Documentation](https://www.last.fm/api/scrobbling#scrobble-requests)
     ///

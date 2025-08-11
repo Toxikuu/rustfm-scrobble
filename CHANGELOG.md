@@ -52,7 +52,7 @@ Version 0.9.1 - 2017-11-20
 
   * Re-designed authentication API:
     * Add support for authenticating with session key (#16)
-    * Implement current password authentication in `Scrobbler::authenticate_with_passsword`
+    * Implement current password authentication in `Scrobbler::authenticate_with_password`
     * Deprecate old `authenticate` method
   * Expose current session key via `Scrobbler::session_key` (#17)
   * Separate API response structs and common values contained in the structs (new 
