@@ -8,7 +8,7 @@ keywords = ["lastfm", "last-fm", "scrobble", "api"]
 license = "MIT"
 readme = "README.md"
 categories = ["api-bindings", "multimedia"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 ureq = "^3"
