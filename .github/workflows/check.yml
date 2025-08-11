@@ -21,18 +21,8 @@ jobs:
 
     - name: Check for trailing whitespace
       run: |
-        sudo apt-get update
         sudo apt-get install -y ripgrep
-        ! ripgrep '\s$'
-
-      # TODO: Consider using on schedule for this
-    - name: Audit
-      uses: rustsec/audit-check@v2.0.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Check dependencies
-      uses: EmbarkStudios/cargo-deny-action@v2.0.12
+        ! rg '\s$'
 
     - name: Install rust
       uses: dtolnay/rust-toolchain@stable
@@ -48,3 +38,13 @@ jobs:
 
     - name: Check documentation
       run: cargo doc --no-deps --document-private-items --workspace
+
+      # TODO: Consider using on schedule for this
+    - name: Audit
+      uses: rustsec/audit-check@v2.0.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check dependencies
+      uses: EmbarkStudios/cargo-deny-action@v2.0.12
+
